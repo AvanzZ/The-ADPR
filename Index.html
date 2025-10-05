@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hyderabad Startup Human Bingo</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // Rotation Setup
+    const roster = [
+      "Alice","Bob","Carol","David","Emma",
+      "Frank","Grace","Henry","Irene","Jack",
+      "Karen","Leo","Mona","Nathan","Olivia",
+      "Paul","Quinn","Rachel","Steve","Tina",
+      "Uma","Victor","Wendy","Xavier","Yara"
+    ];
+    const schedule = [
+      [["Alice","Bob","Carol","David","Emma"],["Frank","Grace","Henry","Irene","Jack"],["Karen","Leo","Mona","Nathan","Olivia"],["Paul","Quinn","Rachel","Steve","Tina"],["Uma","Victor","Wendy","Xavier","Yara"]],
+      [["Alice","Frank","Karen","Paul","Uma"],["Bob","Grace","Leo","Quinn","Victor"],["Carol","Henry","Mona","Rachel","Wendy"],["David","Irene","Nathan","Steve","Xavier"],["Emma","Jack","Olivia","Tina","Yara"]],
+      [["Alice","Grace","Mona","Steve","Yara"],["Bob","Henry","Olivia","Tina","Uma"],["Carol","Irene","Paul","Quinn","Victor"],["David","Jack","Karen","Rachel","Wendy"],["Emma","Frank","Leo","Nathan","Xavier"]],
+      [["Alice","Henry","Olivia","Quinn","Xavier"],["Bob","Irene","Karen","Steve","Yara"],["Carol","Jack","Leo","Tina","Uma"],["David","Frank","Mona","Rachel","Victor"],["Emma","Grace","Nathan","Paul","Wendy"]],
+      [["Alice","Irene","Leo","Steve","Wendy"],["Bob","Jack","Mona","Paul","Xavier"],["Carol","Frank","Nathan","Tina","Yara"],["David","Grace","Olivia","Quinn","Uma"],["Emma","Henry","Karen","Rachel","Victor"]],
+      [["Alice","Jack","Nathan","Quinn","Victor"],["Bob","Frank","Olivia","Rachel","Wendy"],["Carol","Grace","Karen","Steve","Xavier"],["David","Henry","Leo","Tina","Yara"],["Emma","Irene","Mona","Paul","Uma"]]
+    ];
+    const tableLabels = ["A","B","C","D","E"];
+    function RoundManager({ roster, schedule, roundDuration }) {
+      const [round, setRound] = React.useState(0);
+      const [secs, setSecs] = React.useState(roundDuration * 60);
+      React.useEffect(() => {
+        setSecs(roundDuration * 60); setRound(0);
+      }, [roundDuration]);
+      React.useEffect(() => {
+        if (secs === 0 && round < schedule.length - 1) { setRound(r => r + 1); setSecs(roundDuration * 60);}
+        if (secs === 0 && round === schedule.length - 1) return;
+        const timer = setInterval(() => { setSecs(prev => prev > 0 ? prev - 1 : 0); }, 1000);
+        return () => clearInterval(timer);
+      }, [secs, round, roundDuration]);
+      return (
+        <div className="p-4 bg-white rounded-xl shadow mb-6 w-full max-w-2xl mx-auto mt-6">
+          <h2 className="text-xl font-bold">Round {round + 1} of {schedule.length}</h2>
+          <div className="text-3xl my-2 font-mono">{Math.floor(secs/60)}:{String(secs%60).padStart(2,'0')}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {roster.map(name => {
+              const tableIndex = schedule[round].findIndex(tbl => tbl.includes(name));
+              return (<p key={name} className="text-gray-800"><span className="font-semibold">{name}</span> → Table <span className="text-indigo-600 font-bold">{tableLabels[tableIndex]}</span></p>);
+            })}
+          </div>
+        </div>
+      );
+    }
+    // Bingo cards DATA (trimmed for this message, you can copy the full data block from your files)
+    const bingoData = {
+      cards: [
+            {
+              card_number: 1,
+              grid: [
+                ["Can speak in 3 different accents", "Has worked on a side project", "Knows how to code in Python", "Has worked during a power cut", "Uses Spotify/music while coding"],
+                ["Has worked from a hotel room", "Plays mobile games during breaks", "Has worked a weekend hackathon", "Has traveled by auto-rickshaw this week", "Knows the Metro routes by heart"],
+                ["Knows how to make dosa from scratch", "Has been to the Charminar this year", "FREE SPACE", "Knows the best biryani place in Banjara Hills", "Has been to a rooftop restaurant in Hi-Tech City"],
+                ["Has attended a wedding this year", "Has ordered food delivery past 11 PM", "Has traveled to Goa this year", "Uses more than 3 monitors for work", "Has worked during Diwali/festival"],
+                ["Can explain blockchain in simple terms", "Knows the best ice cream place in the city", "Knows the best street food spots", "Uses GitHub daily", "Has worked from home in pajamas"]
+              ]
+            },
+            {
+              card_number: 2,
+              grid: [
+                ["Can solve a Rubik's cube", "Has worked from a cafe in Jubilee Hills", "Has been to the Charminar this year", "Has worked during Diwali/festival", "Can speak in 3 different accents"],
+                ["Knows how to make dosa from scratch", "Has worked from a co-working space", "Has attended a startup pitch event", "Has been to a startup networking event", "Uses more than 5 productivity apps"],
+                ["Has attended a tech meetup in Hyderabad", "Can cook one dish really well", "FREE SPACE", "Has been to a rooftop restaurant in Hi-Tech City", "Has attended a wedding this year"],
+                ["Has worked from a different time zone", "Prefers WhatsApp over email for work", "Drinks more coffee than water", "Has ordered food delivery past 11 PM", "Has attended an event at T-Hub"],
+                ["Uses keyboard shortcuts like a pro", "Knows the Metro routes by heart", "Knows the best ice cream place in the city", "Uses Spotify/music while coding", "Uses dark mode for everything"]
+              ]
+            },
+            {
+              card_number: 3,
+              grid: [
+                ["Knows all team members' birthdays", "Knows how to make dosa from scratch", "Can make perfect filter coffee", "Can cook one dish really well", "Has been to the Charminar this year"],
+                ["Knows how to code in Python", "Knows the best street food spots", "Has worked during a power cut", "Has been to Hussain Sagar lake", "Has worked through lunch"],
+                ["Has ordered food delivery past 11 PM", "Has attended an event at T-Hub", "FREE SPACE", "Knows the Metro routes by heart", "Knows how to play carrom"],
+                ["Has worked past midnight on a project", "Has worked from home in pajamas", "Knows the best biryani place in Banjara Hills", "Uses more than 5 productivity apps", "Prefers WhatsApp over email for work"],
+                ["Has been to Phoenix Mall/Forum Mall", "Has traveled to Goa this year", "Has attended a wedding this year", "Uses dark mode for everything", "Has worked a weekend hackathon"]
+              ]
+            },
+            {
+              card_number: 4,
+              grid: [
+                ["Has worked from a cafe in Jubilee Hills", "Has been to a startup networking event", "Knows how to play carrom", "Can make perfect filter coffee", "Drinks more coffee than water"],
+                ["Uses dark mode for everything", "Has worked from a different time zone", "Has attended a tech meetup in Hyderabad", "Knows the Metro routes by heart", "Has been to Hussain Sagar lake"],
+                ["Knows how to make dosa from scratch", "Uses GitHub daily", "FREE SPACE", "Has been to Phoenix Mall/Forum Mall", "Has worked during Diwali/festival"],
+                ["Knows all team members' birthdays", "Has worked from a hotel room", "Has attended an event at T-Hub", "Has worked from a co-working space", "Has been to Ramoji Film City"],
+                ["Has worked through lunch", "Knows how to code in Python", "Has attended a startup pitch event", "Has binge-watched a series in one weekend", "Has worked on a side project"]
+              ]
+            },
+            {
+              card_number: 5,
+              grid: [
+                ["Drinks more coffee than water", "Knows the best ice cream place in the city", "Knows all team members' birthdays", "Uses GitHub daily", "Has traveled to Goa this year"],
+                ["Drinks chai more than 3 times a day", "Can solve a Rubik's cube", "Has attended a startup pitch event", "Can speak in 3 different accents", "Uses dark mode for everything"],
+                ["Plays cricket or follows IPL religiously", "Has worked on a side project", "FREE SPACE", "Has worked from home in pajamas", "Uses more than 3 monitors for work"],
+                ["Has been to the Charminar this year", "Can cook one dish really well", "Has worked through lunch", "Knows how to play carrom", "Has ordered food delivery past 11 PM"],
+                ["Uses more than 5 productivity apps", "Has attended a tech meetup in Hyderabad", "Has been to a rooftop restaurant in Hi-Tech City", "Has worked from a co-working space", "Knows the best biryani place in Banjara Hills"]
+              ]
+            },
+            {
+              card_number: 6,
+              grid: [
+                ["Plays cricket or follows IPL religiously", "Knows how to code in Python", "Has attended an event at T-Hub", "Has been to Ramoji Film City", "Has worked past midnight on a project"],
+                ["Can solve a Rubik's cube", "Knows how to make dosa from scratch", "Can make perfect filter coffee", "Knows the Metro routes by heart", "Knows the best biryani place in Banjara Hills"],
+                ["Knows the best street food spots", "Has traveled by auto-rickshaw this week", "FREE SPACE", "Uses dark mode for everything", "Can speak in 3 different accents"],
+                ["Has been to Phoenix Mall/Forum Mall", "Has traveled to Goa this year", "Has worked a weekend hackathon", "Has been to a startup networking event", "Has been to the Charminar this year"],
+                ["Has worked on a side project", "Has attended a tech meetup in Hyderabad", "Knows all team members' birthdays", "Has ordered food delivery past 11 PM", "Can speak 3+ languages fluently"]
+              ]
+            }
+          ]
+        };
+    // --- Paste your full BingoApp function here ---
+    // ...BingoApp code block starts...
+    function BingoApp() {
+      const [view, setView] = React.useState('home');
+      const [selectedCard, setSelectedCard] = React.useState(null);
+      const [playerName, setPlayerName] = React.useState('');
+      const [marked, setMarked] = React.useState({});
+      const [players, setPlayers] = React.useState([]);
+      const [startTime, setStartTime] = React.useState(null);
+      const [hasBingo, setHasBingo] = React.useState(false);
+      const [winningLines, setWinningLines] = React.useState([]);
+      React.useEffect(() => {
+        if (selectedCard !== null) {
+          const initialMarked = {};
+          for (let i = 0; i < 5; i++) {for (let j = 0; j < 5; j++) {if (bingoData.cards[selectedCard].grid[i][j] === "FREE SPACE") {initialMarked[`${i}-${j}`] = true;}}}
+          setMarked(initialMarked);
+        }
+      }, [selectedCard]);
+      const checkBingo = (newMarked) => {
+        const lines = [];
+        for (let i = 0; i < 5; i++) {if ([0,1,2,3,4].every(j => newMarked[`${i}-${j}`])) {lines.push({ type: 'row', index: i });}}
+        for (let j = 0; j < 5; j++) {if ([0,1,2,3,4].every(i => newMarked[`${i}-${j}`])) {lines.push({ type: 'col', index: j });}}
+        if ([0,1,2,3,4].every(i => newMarked[`${i}-${i}`])) {lines.push({ type: 'diag', index: 0 });}
+        if ([0,1,2,3,4].every(i => newMarked[`${i}-${4-i}`])) {lines.push({ type: 'diag', index: 1 });}
+        return lines;
+      };
+      const handleCellClick = (row, col) => {
+        if (bingoData.cards[selectedCard].grid[row][col] === "FREE SPACE") return;
+        const newMarked = { ...marked, [`${row}-${col}`]: !marked[`${row}-${col}`] };
+        setMarked(newMarked);
+        const lines = checkBingo(newMarked);
+        if (lines.length > 0 && !hasBingo) {
+          setHasBingo(true);
+          setWinningLines(lines);
+          const endTime = Date.now();
+          const duration = Math.floor((endTime - startTime) / 1000);
+          const newPlayer = { name: playerName, card: selectedCard + 1, time: duration, completed: Object.keys(newMarked).filter(k => newMarked[k]).length };
+          setPlayers(prev => [...prev, newPlayer].sort((a, b) => a.time - b.time));
+        }
+      };
+      const startGame = (cardIndex) => {
+        if (!playerName.trim()) { alert('Please enter your name first!'); return; }
+        setSelectedCard(cardIndex);
+        setStartTime(Date.now());
+        setView('game');
+        setHasBingo(false);
+        setWinningLines([]);
+      };
+      const isInWinningLine = (row, col) => {
+        return winningLines.some(line => {
+          if (line.type === 'row' && line.index === row) return true;
+          if (line.type === 'col' && line.index === col) return true;
+          if (line.type === 'diag' && line.index === 0 && row === col) return true;
+          if (line.type === 'diag' && line.index === 1 && row === 4 - col) return true;
+          return false;
+        });
+      };
+      const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+      if (view === 'home') {return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 mb-6">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-gray-800 mb-2">🎯 Human Bingo</h1>
+                <p className="text-xl text-gray-600">Hyderabad Startup Team Building</p>
+              </div>
+              <div className="mb-8">
+                <label className="block text-gray-700 font-semibold mb-2">Enter Your Name</label>
+                <input type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} placeholder="Your name..." className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none text-lg"/>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                {bingoData.cards.map((card, idx) => (
+                  <button key={idx} onClick={() => startGame(idx)} className="bg-gradient-to-br from-pink-500 to-teal-400 hover:from-pink-600 hover:to-teal-500 text-white rounded-xl p-6 transform transition hover:scale-105 shadow-lg">
+                    <div className="text-5xl mb-2">📋</div>
+                    <div className="text-3xl font-bold mb-1">{card.card_number}</div>
+                    <div className="text-sm">Bingo Card #{card.card_number}</div>
+                  </button>
+                ))}
+              </div>
+              <button onClick={() => setView('leaderboard')} className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition">
+                <span className="text-xl">🏆</span>
+                View Leaderboard
+              </button>
+            </div>
+            <div className="bg-white rounded-xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span className="text-2xl">👥</span>How to Play
+              </h3>
+              <ul className="space-y-2 text-gray-700">
+                <li className="flex items-start gap-2"><span className="text-purple-600 font-bold">1.</span> <span>Enter your name and select a bingo card</span></li>
+                <li className="flex items-start gap-2"><span className="text-purple-600 font-bold">2.</span> <span>Find teammates who match each prompt via chat/video</span></li>
+                <li className="flex items-start gap-2"><span className="text-purple-600 font-bold">3.</span> <span>Click squares to mark them when confirmed</span></li>
+                <li className="flex items-start gap-2"><span className="text-purple-600 font-bold">4.</span> <span>First to get 5 in a row (horizontal, vertical, or diagonal) wins!</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      );}
+      if (view === 'leaderboard') {return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-2xl p-8">
+              <button onClick={() => setView('home')} className="mb-6 flex items-center gap-2 text-purple-600 hover:text-purple-800 font-semibold">
+                <span className="text-xl">←</span>Back to Home
+              </button>
+              <div className="text-center mb-8">
+                <div className="text-6xl mb-4">🏆</div>
+                <h2 className="text-3xl font-bold text-gray-800">Leaderboard</h2>
+              </div>
+              {players.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <div className="text-6xl mb-4 opacity-50">🏅</div>
+                  <p>No winners yet! Be the first to complete a bingo!</p>
+                </div>
+              ) : (
+              <div className="space-y-3">{players.map((player, idx) => (
+                  <div key={idx} className={`flex items-center justify-between p-4 rounded-lg ${
+                    idx === 0 ? 'bg-yellow-100 border-2 border-yellow-400' :
+                    idx === 1 ? 'bg-gray-100 border-2 border-gray-400' :
+                    idx === 2 ? 'bg-orange-100 border-2 border-orange-400':
+                    'bg-gray-50 border border-gray-300'}`}>
+                    <div className="flex items-center gap-4">
+                      <div className={`text-2xl font-bold ${
+                        idx === 0 ? 'text-yellow-600' :
+                        idx === 1 ? 'text-gray-600' :
+                        idx === 2 ? 'text-orange-600' : 'text-gray-500'
+                      }`}>#{idx + 1}</div>
+                      <div>
+                        <div className="font-bold text-gray-800">{player.name}</div>
+                        <div className="text-sm text-gray-600">Card #{player.card}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <span className="text-lg">⏱️</span>
+                        <span className="font-semibold">{formatTime(player.time)}</span>
+                      </div>
+                      <div className="text-xs text-gray-500">{player.completed} squares</div>
+                    </div>
+                  </div>
+              ))}</div>
+              )}
+            </div>
+          </div>
+        </div>
+      );}
+      if (view === 'game') {
+        const card = bingoData.cards[selectedCard];
+        return (
+        <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-pink-500 to-teal-400 text-white p-6">
+                <button onClick={() => setView('home')} className="mb-4 flex items-center gap-2 text-white hover:opacity-80">
+                  <span className="text-xl">←</span>Back
+                </button>
+                <h1 className="text-2xl font-bold">🎯 Bingo Card #{card.card_number}</h1>
+                <p className="opacity-90">Player: {playerName}</p>
+              </div>
+              {hasBingo && (
+                <div className="bg-green-500 text-white p-4 text-center font-bold flex items-center justify-center gap-2">
+                  <span className="text-2xl">✅</span>
+                  BINGO! You won! Check the leaderboard!
+                </div>
+              )}
+              <div className="p-4 bg-gray-50">
+                <div className="grid grid-cols-5 gap-1">
+                  {card.grid.map((row, i) =>
+                    row.map((cell, j) => {
+                      const isFree = cell === "FREE SPACE";
+                      const isMarked = marked[`${i}-${j}`];
+                      const inWinning = isInWinningLine(i, j);
+                      return (
+                        <button key={`${i}-${j}`}
+                          onClick={() => handleCellClick(i, j)}
+                          className={`
+                            aspect-square p-2 rounded-lg text-xs flex items-center justify-center text-center
+                            transition-all transform hover:scale-105 relative
+                            ${isFree ? 'bg-gradient-to-br from-pink-500 to-teal-400 text-white font-bold' :
+                              isMarked ? 'bg-green-100 border-2 border-green-500' :
+                              'bg-white border-2 border-gray-300 hover:border-teal-400'}
+                            ${inWinning && isMarked ? 'ring-4 ring-yellow-400' : ''}
+                          `}
+                        >
+                          {cell}
+                          {isMarked && !isFree && (
+                            <span className="absolute top-1 right-1 text-green-600 font-bold text-base">✓</span>
+                          )}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+              <div className="p-6 bg-gray-50 border-t">
+                <div className="text-center text-gray-600">
+                  <p className="font-semibold mb-2">Marked: {Object.keys(marked).filter(k => marked[k]).length}/25</p>
+                  <p className="text-sm">Click squares to mark them as you find matching teammates!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+      }
+    }
+    // ----
+    function App() {
+      return (
+        <div>
+          <RoundManager roster={roster} schedule={schedule} roundDuration={7} />
+          <BingoApp />
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
